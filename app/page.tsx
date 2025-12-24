@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { BookOpen, Brain, Clock, Zap } from 'lucide-react'
+import { BookOpen, Brain, Clock, Zap, Sparkles } from 'lucide-react'
 import MaterialsManager from '@/app/components/MaterialsManager'
 import { useState } from 'react'
 
@@ -106,6 +106,25 @@ export default function Home() {
               </p>
               <div className="mt-4 flex items-center gap-2 text-purple-400 font-semibold">
                 <span>Review Progress</span>
+                <span className="group-hover:translate-x-2 transition">→</span>
+              </div>
+            </div>
+          </Link>
+
+          {/* AI-Powered Quiz Mode */}
+          <Link href="/study/dynamic-quiz">
+            <div className="glassmorphism p-8 rounded-2xl cursor-pointer transform transition-all hover:scale-105 group md:col-span-2">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-pink-500/20 rounded-lg group-hover:bg-pink-500/30 transition">
+                  <Sparkles className="w-8 h-8 text-pink-400" />
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold">AI-Powered Quiz</h2>
+              </div>
+              <p className="text-slate-300 text-sm sm:text-base">
+                Upload your curriculum materials and get AI-generated questions grounded in your content. 100% accurate, sourced-based learning.
+              </p>
+              <div className="mt-4 flex items-center gap-2 text-pink-400 font-semibold">
+                <span>Start AI Quiz</span>
                 <span className="group-hover:translate-x-2 transition">→</span>
               </div>
             </div>
