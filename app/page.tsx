@@ -2,8 +2,12 @@
 
 import Link from 'next/link'
 import { BookOpen, Brain, Clock, Zap } from 'lucide-react'
+import MaterialsManager from '@/app/components/MaterialsManager'
+import { useState } from 'react'
 
 export default function Home() {
+  const [showMaterials, setShowMaterials] = useState(false)
+
   return (
     <main className="min-h-screen w-full">
       {/* Hero Section */}
@@ -15,7 +19,19 @@ export default function Home() {
           <p className="text-lg sm:text-xl md:text-2xl text-slate-300 mb-8">
             Quiz Master Edition!
           </p>
+          <button
+            onClick={() => setShowMaterials(!showMaterials)}
+            className="mb-8 px-6 py-2 bg-slate-700/50 hover:bg-slate-700/80 rounded-lg text-slate-300 font-semibold transition"
+          >
+            {showMaterials ? 'Hide Materials' : 'Manage Materials'}
+          </button>
         </div>
+
+        {showMaterials && (
+          <div className="w-full mb-12 animate-fade-in">
+            <MaterialsManager />
+          </div>
+        )}
 
         {/* Study Mode Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mb-12 animate-slide">
