@@ -17,8 +17,9 @@ npm install
 ### 2. Configure Environment
 Create `.env.local` in the project root:
 ```env
-HUGGINGFACE_TOKEN=YOUR_TOKEN_HERE
+HUGGINGFACE_TOKEN=your_hugging_face_api_token_here
 ```
+Replace with your actual Hugging Face Pro API token.
 
 ### 3. Run Development Server
 ```bash
