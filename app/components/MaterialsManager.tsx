@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Upload, Trash2, FileText, AlertCircle } from 'lucide-react'
+import { Upload, Trash2, FileText, AlertCircle, BookOpen } from 'lucide-react'
+import CurriculumBrowser from './CurriculumBrowser'
 
 interface Material {
   id: number
@@ -21,6 +22,7 @@ export default function MaterialsManager() {
   const [error, setError] = useState<string | null>(null)
   const [showUploadForm, setShowUploadForm] = useState(false)
   const [formData, setFormData] = useState({ title: '', description: '', file: null as File | null })
+  const [activeTab, setActiveTab] = useState<'materials' | 'curriculum'>('materials')
 
   useEffect(() => {
     fetchMaterials()
@@ -112,13 +114,40 @@ export default function MaterialsManager() {
   }
 
   return (
-    <div className="w-full max-w-4xl">
-      {/* Upload Section */}
+    <div className="w-full max-w-6xl">
+      {/* Tab Navigation */}
+      <div className="flex gap-4 mb-8">
+        <button
+          onClick={() => setActiveTab('materials')}
+          className={`px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2 ${
+            activeTab === 'materials'
+              ? 'bg-blue-500/20 border border-blue-400 text-blue-300'
+              : 'bg-slate-700/50 hover:bg-slate-700/70 text-slate-300'
+          }`}
+        >
+          <Upload className="w-5 h-5" />
+          My Materials
+        </button>
+        <button
+          onClick={() => setActiveTab('curriculum')}
+          className={`px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2 ${
+            activeTab === 'curriculum'
+              ? 'bg-blue-500/20 border border-blue-400 text-blue-300'
+              : 'bg-slate-700/50 hover:bg-slate-700/70 text-slate-300'
+          }`}
+        >
+          <BookOpen className="w-5 h-5" />
+          Chamberlain Curriculum
+        </button>
+      </div>
+
+      {/* Materials Tab */}
+      {activeTab === 'materials' && (
       <div className="glassmorphism p-8 rounded-2xl mb-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold flex items-center gap-3">
             <Upload className="w-6 h-6 text-blue-400" />
-            Curriculum Materials
+            My Study Materials
           </h2>
           <button
             onClick={() => setShowUploadForm(!showUploadForm)}
@@ -223,6 +252,10 @@ export default function MaterialsManager() {
           </div>
         )}
       </div>
+      )}
+
+      {/* Curriculum Tab */}
+      {activeTab === 'curriculum' && <CurriculumBrowser />}
     </div>
   )
 }
