@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Chamberlain PMHNP',
+  title: 'Heidi NP - Quiz Master Edition',
   description: 'Study Mode for Psychiatric Mental Health Nursing',
 }
 
