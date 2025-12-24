@@ -181,7 +181,13 @@ export async function GET(request: NextRequest) {
     }
 
     const normalizedQuery = query.toLowerCase()
-    const results = []
+    const results: Array<{
+      title: string
+      course: string
+      topic: string
+      summary: string
+      keyTerms: string[]
+    }> = []
 
     // Search through curriculum
     Object.entries(SAMPLE_CURRICULUM).forEach(([_key, content]) => {
