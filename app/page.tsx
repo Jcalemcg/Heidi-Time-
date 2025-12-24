@@ -9,11 +9,11 @@ export default function Home() {
       {/* Hero Section */}
       <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-8">
         <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-white to-purple-400 bg-clip-text text-transparent">
-            Chamberlain PMHNP
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-white to-purple-400 bg-clip-text text-transparent">
+            Heidi NP
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-slate-300 mb-8">
-            Master Psychiatric Mental Health Nursing Concepts
+            Quiz Master Edition!
           </p>
         </div>
 
