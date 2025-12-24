@@ -31,7 +31,6 @@ export async function parsePdf(filePath: string): Promise<ParsedDocument> {
     text: fullText,
     metadata: {
       pages: pdf.numPages,
-      title: pdf.documentInfo?.title as string | undefined,
     },
   }
 }

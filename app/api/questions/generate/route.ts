@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     const db = getDatabase()
 
     // Verify material exists
-    const material = db.prepare('SELECT id, title, status FROM materials WHERE id = ?').get(materialId)
+    const material = db.prepare('SELECT id, title, status FROM materials WHERE id = ?').get(materialId) as any
 
     if (!material) {
       return NextResponse.json({ error: 'Material not found' }, { status: 404 })

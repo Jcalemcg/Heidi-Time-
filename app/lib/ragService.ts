@@ -40,7 +40,7 @@ export async function generateQuestionsFromMaterial(
     .map((chunk) => ({
       chunkId: chunk.id,
       content: chunk.content,
-      embedding: new Float32Array(chunk.embedding),
+      embedding: Array.from(new Float32Array(chunk.embedding)),
     }))
 
   if (chunksWithDecodedEmbeddings.length === 0) {
@@ -206,7 +206,7 @@ function generateQuestionsFromChunksBasic(chunks: any[]): GeneratedQuestion[] {
 }
 
 function selectDiverseChunks(
-  chunks: { chunkId: number; content: string; embedding: Float32Array }[],
+  chunks: { chunkId: number; content: string; embedding: number[] }[],
   count: number
 ) {
   if (chunks.length <= count) {
@@ -254,7 +254,7 @@ export async function validateAnswerAgainstMaterial(
       .map((c) => ({
         chunkId: c.id,
         content: c.content,
-        embedding: new Float32Array(c.embedding),
+        embedding: Array.from(new Float32Array(c.embedding)),
       }))
 
     if (chunksWithEmbeddings.length === 0) {

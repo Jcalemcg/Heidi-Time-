@@ -3,7 +3,7 @@ import { getDatabase } from '@/app/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const searchParams = request.nextUrl.searchParams
     const materialId = searchParams.get('materialId')
     const limit = parseInt(searchParams.get('limit') || '5', 10)
 
