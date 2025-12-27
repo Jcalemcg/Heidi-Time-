@@ -1,30 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { Clock } from 'lucide-react'
+import { timedData } from '@/data/timedData'
+import { Header } from '@/components/Header'
+import { Card } from '@/components/Card'
 import Link from 'next/link'
-import { ChevronLeft, Clock } from 'lucide-react'
-
-interface TimedQuestion {
-  id: number
-  question: string
-  options: string[]
-  correctAnswer: number
-}
-
-const TIMED_QUESTIONS: TimedQuestion[] = [
-  {
-    id: 1,
-    question: 'What is the DSM-5 definition of major depressive disorder?',
-    options: ['One depressive episode', 'Two or more depressive episodes', 'Persistent depressive episodes lasting 2+ weeks', 'A single month of depressive symptoms'],
-    correctAnswer: 2
-  },
-  {
-    id: 2,
-    question: 'How long should a depressive episode last to meet MDD criteria?',
-    options: ['1 week', '2 weeks', 'One week or less', '1 month'],
-    correctAnswer: 1
-  },
-]
 
 export default function TimedMode() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -32,8 +13,23 @@ export default function TimedMode() {
   const [score, setScore] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [gameActive, setGameActive] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
-  const question = TIMED_QUESTIONS[currentQuestion]
+  const question = timedData[currentQuestion]
+
+  const handleTimeUp = useCallback(() => {
+    if (currentQuestion < timedData.length - 1) {
+      setCurrentQuestion(currentQuestion + 1)
+      setTimeLeft(30)
+      setSelectedAnswer(null)
+    } else {
+      setGameActive(false)
+    }
+  }, [currentQuestion])
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!gameActive) return
@@ -49,17 +45,7 @@ export default function TimedMode() {
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [gameActive])
-
-  const handleTimeUp = () => {
-    if (currentQuestion < TIMED_QUESTIONS.length - 1) {
-      setCurrentQuestion(currentQuestion + 1)
-      setTimeLeft(30)
-      setSelectedAnswer(null)
-    } else {
-      setGameActive(false)
-    }
-  }
+  }, [gameActive, handleTimeUp])
 
   const handleAnswer = (optionIndex: number) => {
     if (selectedAnswer === null) {
@@ -68,7 +54,7 @@ export default function TimedMode() {
         setScore(score + 1)
       }
       setTimeout(() => {
-        if (currentQuestion < TIMED_QUESTIONS.length - 1) {
+        if (currentQuestion < timedData.length - 1) {
           setCurrentQuestion(currentQuestion + 1)
           setTimeLeft(30)
           setSelectedAnswer(null)
@@ -79,20 +65,28 @@ export default function TimedMode() {
     }
   }
 
+  if (!mounted) return null
+
   if (!gameActive) {
+    const percentage = Math.round((score / timedData.length) * 100)
     return (
       <main className="min-h-screen w-full py-8 px-4 sm:px-6 md:px-8 flex items-center justify-center">
         <div className="max-w-2xl w-full">
-          <div className="glassmorphism p-8 rounded-2xl text-center animate-fade-in">
+          <Card className="text-center" animate="fade-in">
             <h1 className="text-4xl sm:text-5xl font-bold mb-4">Time's Up!</h1>
-            <div className="text-6xl font-bold text-orange-400 mb-4">{score}/{TIMED_QUESTIONS.length}</div>
+            <div className="text-6xl font-bold text-orange-400 mb-4">{score}/{timedData.length}</div>
             <p className="text-xl text-slate-300 mb-8">
-              Final Score: {Math.round((score / TIMED_QUESTIONS.length) * 100)}%
+              Final Score: {percentage}%
             </p>
+            <div className="mb-8 text-slate-300">
+              {percentage >= 80 && <p>⚡ You're incredibly fast and accurate!</p>}
+              {percentage >= 60 && percentage < 80 && <p>✓ Good speed and accuracy! Keep practicing.</p>}
+              {percentage < 60 && <p>⏱️ Work on your speed and accuracy. Try again!</p>}
+            </div>
             <Link href="/" className="inline-block glassmorphism px-8 py-3 rounded-xl hover:bg-slate-800/80 transition transform hover:scale-105">
               Return Home
             </Link>
-          </div>
+          </Card>
         </div>
       </main>
     )
@@ -101,20 +95,13 @@ export default function TimedMode() {
   return (
     <main className="min-h-screen w-full py-8 px-4 sm:px-6 md:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 animate-fade-in">
-          <Link href="/" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 transition">
-            <ChevronLeft className="w-5 h-5" />
-            Back to Home
-          </Link>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">Timed Mode</h1>
-        </div>
+        <Header title="Timed Mode" subtitle="Answer questions under time pressure" />
 
         {/* Timer and Progress */}
         <div className="grid grid-cols-2 gap-4 mb-8 animate-slide">
           <div className="glassmorphism p-6 rounded-2xl text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Clock className="w-5 h-5 text-orange-400" />
+              <Clock className="w-5 h-5 text-orange-400" aria-label="Timer" />
               <span className="text-sm text-slate-400">Time Left</span>
             </div>
             <div className={`text-4xl font-bold ${timeLeft <= 10 ? 'text-red-400 animate-shake' : 'text-orange-400'}`}>
@@ -122,13 +109,18 @@ export default function TimedMode() {
             </div>
           </div>
           <div className="glassmorphism p-6 rounded-2xl text-center">
-            <div className="text-sm text-slate-400 mb-2">Score</div>
-            <div className="text-4xl font-bold text-blue-400">{score}/{TIMED_QUESTIONS.length}</div>
+            <div className="text-sm text-slate-400 mb-2">Progress</div>
+            <div className="text-4xl font-bold text-blue-400">{currentQuestion + 1}/{timedData.length}</div>
           </div>
         </div>
 
         {/* Question */}
-        <div className="mb-8 glassmorphism p-8 rounded-2xl animate-fade-in">
+        <Card className="animate-fade-in" animate="fade-in">
+          <div className="mb-4">
+            <span className="inline-block bg-orange-500/20 px-3 py-1 rounded-full text-sm text-orange-300">
+              {question.topic}
+            </span>
+          </div>
           <h2 className="text-2xl sm:text-3xl font-bold mb-8">{question.question}</h2>
 
           {/* Options */}
@@ -145,12 +137,13 @@ export default function TimedMode() {
                       : 'bg-red-500/20 border border-red-500 scale-105'
                     : 'glassmorphism hover:bg-slate-800/80 hover:scale-105'
                 } ${selectedAnswer !== null ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                aria-label={`Option ${String.fromCharCode(65 + index)}: ${option}`}
               >
                 <span className="text-lg">{option}</span>
               </button>
             ))}
           </div>
-        </div>
+        </Card>
       </div>
     </main>
   )
