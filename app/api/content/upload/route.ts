@@ -4,38 +4,86 @@ import { parseFile, validateFileSize, truncateContent } from "@/lib/fileParser";
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
-    const file = formData.get("file") as File;
-
-    if (!file) {
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch (error) {
       return NextResponse.json(
-        { error: "No file provided" },
+        {
+          error: `Failed to parse form data: ${error instanceof Error ? error.message : "Unknown error"}`,
+        },
         { status: 400 }
       );
     }
 
-    // Validate file size
-    if (!validateFileSize(file)) {
+    const file = formData.get("file") as File;
+
+    if (!file) {
       return NextResponse.json(
-        { error: "File is too large (max 10MB)" },
+        { error: "No file provided. Please select a file to upload." },
+        { status: 400 }
+      );
+    }
+
+    // Validate file is actually a File object
+    if (!(file instanceof File)) {
+      return NextResponse.json(
+        { error: "Invalid file format in upload request" },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size (now throws error if too large)
+    try {
+      validateFileSize(file);
+    } catch (error) {
+      return NextResponse.json(
+        { error: (error as Error).message },
         { status: 400 }
       );
     }
 
     // Parse file
-    const { content, title } = await parseFile(file);
+    let content: string;
+    let title: string;
+    try {
+      const parsed = await parseFile(file);
+      content = parsed.content;
+      title = parsed.title;
+    } catch (error) {
+      console.error("File parsing error:", error);
+      return NextResponse.json(
+        {
+          error: `File parsing failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        },
+        { status: 400 }
+      );
+    }
 
     // Truncate if needed (to stay within API limits)
     const truncatedContent = truncateContent(content, 50000);
 
     // Store content
-    const stored = storeContent(title, truncatedContent, file.type);
+    let stored;
+    try {
+      stored = storeContent(title, truncatedContent, file.type);
+    } catch (error) {
+      console.error("Storage error:", error);
+      return NextResponse.json(
+        {
+          error: `Failed to store content: ${error instanceof Error ? error.message : "Unknown error"}`,
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(stored, { status: 201 });
   } catch (error) {
-    console.error("Upload error:", error);
+    console.error("Unexpected upload error:", error);
     return NextResponse.json(
-      { error: (error as Error).message },
+      {
+        error: `Upload failed: ${error instanceof Error ? error.message : "An unexpected error occurred"}`,
+      },
       { status: 500 }
     );
   }
