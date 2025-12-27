@@ -149,7 +149,9 @@ export function ChatBox({ contentId, contentTitle }: ChatBoxProps) {
             type="submit"
             disabled={isLoading || !input.trim()}
             icon={<Send className="w-4 h-4" />}
-          />
+          >
+            Send
+          </Button>
         </div>
       </form>
     </div>
