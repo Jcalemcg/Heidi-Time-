@@ -1,6 +1,6 @@
 'use client'
 
-import { BookOpen, Brain, Clock, Zap } from 'lucide-react'
+import { BookOpen, Brain, Clock, Zap, Upload, MessageCircle } from 'lucide-react'
 import { ModeCard } from '@/components/ModeCard'
 import { StatsCard } from '@/components/StatsCard'
 
@@ -17,6 +17,8 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Built-in Study Modes */}
+        <h2 className="text-2xl font-bold mb-6 w-full max-w-4xl text-left">Built-in Study Modes</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mb-12 animate-slide">
           <ModeCard
             href="/study/flashcard"
@@ -55,6 +57,29 @@ export default function Home() {
           />
         </div>
 
+        {/* AI Tutor Features */}
+        <h2 className="text-2xl font-bold mb-6 w-full max-w-4xl text-left">AI Tutor Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mb-12 animate-slide">
+          <ModeCard
+            href="/study/library"
+            title="Content Library"
+            description="Upload your own study materials and create custom study content powered by AI."
+            icon={<Upload className="w-8 h-8" />}
+            buttonText="Manage Content"
+            color="blue"
+          />
+
+          <ModeCard
+            href="/study/ai-tutor"
+            title="AI Study Assistant"
+            description="Ask questions about your uploaded materials and get instant, accurate answers."
+            icon={<MessageCircle className="w-8 h-8" />}
+            buttonText="Ask Questions"
+            color="green"
+          />
+        </div>
+
+        {/* Stats */}
         <div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in">
           <StatsCard value="100+" label="Study Questions" color="blue" />
           <StatsCard value="8" label="Core Topics" color="green" />

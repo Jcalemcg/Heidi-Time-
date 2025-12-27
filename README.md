@@ -4,14 +4,21 @@ A modern web-based study application designed for Psychiatric Mental Health Nurs
 
 ## Features
 
-### Study Modes
+### Built-in Study Modes
 
 - **Flashcard Mode**: Interactive flashcards with flip animations, progress tracking, and localStorage persistence
 - **Quiz Mode**: Multiple-choice quizzes with immediate feedback, explanations, and performance tracking
 - **Timed Mode**: Time-constrained questions (30 seconds per question) to build speed and accuracy
 - **Review Mode**: Performance analytics across psychiatric topics with study recommendations
 
-### Content
+### AI Tutor Features (NEW)
+
+- **Content Library**: Upload your own study materials (TXT, Markdown, PDF)
+- **AI Study Assistant**: Ask questions about your uploaded content and get instant, accurate answers powered by Hugging Face LLMs
+- **Dynamic Content Generation**: Automatically generate quiz questions and flashcards from your uploaded materials
+- **Intelligent Q&A**: The AI tutor understands context and provides detailed explanations based on your specific materials
+
+### Pre-loaded Content
 
 - **100+ Study Questions**: Comprehensive coverage of PMHNP exam topics
 - **8 Core Topics**: Depression & Anxiety, Psychotic Disorders, Bipolar Disorder, Substance Use, Personality Disorders, Cognitive Disorders, Therapeutic Techniques, Pharmacology
@@ -26,6 +33,9 @@ A modern web-based study application designed for Psychiatric Mental Health Nurs
 - **Icons**: Lucide React
 - **Testing**: Jest + React Testing Library
 - **State Management**: React Hooks + localStorage
+- **AI/LLM**: Hugging Face Inference API (Mistral 7B)
+- **File Processing**: PDF parsing, text extraction
+- **Backend**: Next.js API Routes
 
 ## Project Structure
 
@@ -35,11 +45,23 @@ heidi-time/
 │   ├── page.tsx                  # Home page
 │   ├── layout.tsx                # Root layout
 │   ├── globals.css               # Global styles
+│   ├── api/
+│   │   ├── content/              # Content management endpoints
+│   │   │   ├── upload/route.ts   # File upload
+│   │   │   ├── list/route.ts     # List content
+│   │   │   └── [id]/route.ts     # Get/delete content
+│   │   ├── generate/             # Content generation endpoints
+│   │   │   ├── questions/route.ts # Generate quiz questions
+│   │   │   └── flashcards/route.ts # Generate flashcards
+│   │   └── chat/route.ts         # Q&A endpoint
 │   └── study/
 │       ├── flashcard/page.tsx    # Flashcard mode
 │       ├── quiz/page.tsx         # Quiz mode
 │       ├── timed/page.tsx        # Timed mode
-│       └── review/page.tsx       # Review mode
+│       ├── review/page.tsx       # Review mode
+│       ├── library/page.tsx      # Content library (NEW)
+│       ├── ai-tutor/page.tsx     # AI study assistant (NEW)
+│       └── generate/page.tsx     # Content generation (NEW)
 ├── components/                   # Reusable components
 │   ├── Button.tsx
 │   ├── Card.tsx
@@ -47,12 +69,21 @@ heidi-time/
 │   ├── ModeCard.tsx
 │   ├── ProgressBar.tsx
 │   ├── StatsCard.tsx
+│   ├── ContentUploader.tsx       # File upload widget (NEW)
+│   ├── ContentLibrary.tsx        # Content browser (NEW)
+│   ├── ChatBox.tsx               # Q&A interface (NEW)
+│   ├── GenerationPanel.tsx       # Content generation panel (NEW)
 │   └── __tests__/                # Component tests
+├── lib/
+│   ├── huggingface.ts            # HF API integration (NEW)
+│   ├── contentStorage.ts         # Content management (NEW)
+│   └── fileParser.ts             # File parsing utilities (NEW)
 ├── data/                         # Study question data
 │   ├── flashcardData.ts
 │   ├── quizData.ts
 │   ├── timedData.ts
 │   └── __tests__/                # Data tests
+├── .env.local                    # Environment variables (NEW)
 └── jest.config.js                # Jest configuration
 ```
 
@@ -231,11 +262,18 @@ docker run -p 3000:3000 heidi-time
 
 ### Environment Variables
 
-Create a `.env.local` file for local development (if needed in future):
+Create a `.env.local` file for local development (required for AI features):
 
-```
+```bash
 NEXT_PUBLIC_APP_NAME=Heidi NP - Quiz Master Edition
+HUGGINGFACE_API_KEY=your_hf_api_key_here
 ```
+
+**Getting a Hugging Face API Key:**
+1. Sign up at https://huggingface.co
+2. Go to Settings → Access Tokens
+3. Create a new token with read access
+4. Add it to your `.env.local` file
 
 ## License
 
@@ -256,7 +294,17 @@ For issues, questions, or suggestions, please open an issue on GitHub.
 
 ## Changelog
 
-### Version 0.1.0 (Current)
+### Version 0.2.0 (Current)
+
+**New AI Tutor Features:**
+- Content library with file upload (TXT, MD, PDF)
+- AI-powered Q&A chatbot
+- Dynamic content generation (quiz questions, flashcards)
+- Hugging Face LLM integration
+- File parsing and text extraction
+- In-memory content storage (upgrade to database recommended)
+
+### Version 0.1.0
 
 - Initial release
 - 4 study modes (Flashcard, Quiz, Timed, Review)
