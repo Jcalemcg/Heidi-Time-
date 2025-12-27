@@ -34,3 +34,7 @@ yarn-error.log*
 *.swp
 *.swo
 *~
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
