@@ -105,7 +105,9 @@ export function ContentLibrary({ onSelectContent }: ContentLibraryProps) {
                 onClick={() => deleteContent(content.id)}
                 className="bg-red-600 hover:bg-red-700"
                 icon={<Trash2 className="w-4 h-4" />}
-              />
+              >
+                Delete
+              </Button>
             </div>
           </div>
         </Card>
